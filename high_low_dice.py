@@ -3,6 +3,7 @@
 This game will roll two dice and you will place 1 of 3 bets.
 High, low, or Seven until you decide to quit or you've lost all your money'"""
 
+from os import O_RDWR
 from random import randint
 
 cash = 100
@@ -23,22 +24,39 @@ while True:
         print("Thanks for playing and hope to see you again")
         break
     #next we check the users bet
-    elif choice == "1" or choice == "2" or choice == "3":
+    elif choice in ["1", "2", "3"]:
+
+        while True:
+            try:
+                bet = int(input("Place your bet: "))  #the try and except statment will cater for infalid bet entires
+            except:
+                print ("Please enter a number")
+                continue
+
+            if bet > 0 and bet <= cash:
+                break
+            else:
+                print ("Invalid Bet")
+
+
         roll = randint(1, 6) + randint (1, 6)
         print (f"You rolled a: {roll}")
-
-        if roll > 7 and choice == "1":
+    
+    #results of rolled dices
+        if (roll > 7 and choice == "1") or (roll < 7 and choice == "2"):
             print("winner!")
             cash += bet
-        elif roll < 7 and choice == "2":
-            print("winner!")
-            cash += (2 * bet) 
+
         elif roll == 7 and choice == "3":
             print("winner!")
-            cash += bet
+            cash += (bet * 2) 
+
         else:
             print ("House wins")
             cash -= bet
+            if cash == 0:   #if the user runs out of money the game ends
+                print ("You're broke")
+                break
     else:
         print ("Enter a valid choice!")
         continue
